@@ -1,8 +1,14 @@
 # Solana Data ETL Pipeline
 
-Production-grade Solana data pipeline for ingesting Solana on-chain data  into Postgres.
+A production-grade Solana data pipeline for ingesting on-chain data into Postgres, enabling analysis of transaction volume over time, token transfers, failed transactions, wallet activity patterns, program usage trends, and the most active programs such as DEXs and NFT markets.
 
-## Quick Start
+<img width="1920" height="1080" alt="Screenshot 2025-12-25 at 09 43 18 (2)" src="https://github.com/user-attachments/assets/4f493390-25c4-4eea-a56a-02ce5343ce51" />
+
+#<img width="719" height="453" alt="Screenshot 2025-12-25 at 09 43 12" src="https://github.com/user-attachments/assets/f50c8c0c-776b-47ce-ace3-6d49e71fa68b" />
+
+<img width="414" height="1074" alt="Screenshot 2025-12-25 at 10 15 08" src="https://github.com/user-attachments/assets/973c0132-e427-4679-9749-2ec173fbbc50" />
+
+# Quick Start
 
 ### 1. Set up Postgres
 
