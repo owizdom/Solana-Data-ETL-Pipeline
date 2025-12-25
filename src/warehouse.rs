@@ -139,13 +139,18 @@ impl PostgresWarehouse {
     }
 
     async fn init_schema(&self, pool: &PgPool) -> Result<()> {
+        // Migrate existing fact_transactions if it has wrong timestamp type
+        sqlx::query("ALTER TABLE IF EXISTS fact_transactions ALTER COLUMN block_time TYPE TIMESTAMPTZ USING block_time::timestamptz").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE IF EXISTS fact_transactions ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at::timestamptz").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE IF EXISTS fact_transactions ALTER COLUMN updated_at TYPE TIMESTAMPTZ USING updated_at::timestamptz").execute(pool).await.ok();
+        
         // Create etl_metadata table
         sqlx::query(
             r#"
             CREATE TABLE IF NOT EXISTS etl_metadata (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL,
-                updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
             "#
         )
@@ -159,14 +164,14 @@ impl PostgresWarehouse {
             CREATE TABLE IF NOT EXISTS fact_transactions (
                 event_id TEXT PRIMARY KEY,
                 slot BIGINT NOT NULL,
-                block_time TIMESTAMP NOT NULL,
+                block_time TIMESTAMPTZ NOT NULL,
                 tx_signature TEXT NOT NULL,
                 program_id TEXT,
                 instruction_index INTEGER NOT NULL,
                 event_type TEXT NOT NULL,
                 raw_payload JSONB,
-                created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-                updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
             "#
         )

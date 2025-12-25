@@ -33,6 +33,9 @@ cargo run --release -- backfill --start-slot 280000000 --end-slot 280001000 --wo
 
 # Run incremental loader (real-time)
 cargo run --release -- incremental --interval 30
+
+# Generate analytics report
+cargo run --release -- analytics
 ```
 
 ### 4. View Data
@@ -49,6 +52,13 @@ psql solana_etl -c "SELECT COUNT(*) FROM fact_transactions;"
 - `health` - Check RPC and database connectivity
 - `backfill --start-slot X --end-slot Y --workers N` - Backfill historical slots
 - `incremental --interval N` - Run continuous incremental loader (N = seconds between runs)
+- `analytics` - Generate analytics report with:
+  - Transaction volume over time
+  - Most active programs (DEXs, NFT markets, etc.)
+  - Token transfer statistics
+  - Failed transactions and errors
+  - Wallet activity patterns
+  - Program usage trends
 
 ## Database Schema
 
@@ -70,19 +80,9 @@ docker-compose up -d
 
 ## Configuration
 
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
-cp .env.example .env
-# Edit .env with your actual API keys and connection strings
-```
-
-Required environment variables:
-- `ALCHEMY_RPC_URL` - Your Alchemy RPC endpoint (required)
+Set via environment variables:
+- `ALCHEMY_RPC_URL` - Your Alchemy RPC endpoint (defaults to hardcoded endpoint)
 - `WAREHOUSE_TYPE` - `postgres` or `bigquery` (default: `postgres`)
-- `WAREHOUSE_CONNECTION` - Postgres connection string (required for postgres)
-
-Optional:
+- `WAREHOUSE_CONNECTION` - Postgres connection string
 - `ETL_BATCH_SIZE` - Events per batch insert (default: 1000)
 - `ETL_INTERVAL_SECONDS` - Incremental loader interval (default: 30)
-- `RUST_LOG` - Logging level (default: info)

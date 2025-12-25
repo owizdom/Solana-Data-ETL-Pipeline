@@ -19,15 +19,9 @@ Cargo.lock
 secrets/
 *.key
 *.pem
-*.json
-!package.json
-!tsconfig.json
 
 # Data
 data/
 *.db
 *.sqlite
 
-# OS
-.DS_Store
-Thumbs.db

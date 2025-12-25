@@ -32,6 +32,8 @@ enum Commands {
     },
     /// Check pipeline health
     Health,
+    /// Generate analytics report
+    Analytics,
 }
 
 #[tokio::main]
@@ -57,6 +59,9 @@ async fn main() -> Result<(), ETLError> {
         }
         Commands::Health => {
             solana_etl::health::check_health(config).await?;
+        }
+        Commands::Analytics => {
+            solana_etl::analytics::run_analytics(config).await?;
         }
     }
 

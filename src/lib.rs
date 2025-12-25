@@ -7,6 +7,7 @@ pub mod warehouse;
 pub mod backfill;
 pub mod incremental;
 pub mod health;
+pub mod analytics;
 
 pub use error::{ETLError, Result};
 
