@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  solana-etl:
+    build: .
+    environment:
+      - ALCHEMY_RPC_URL=${ALCHEMY_RPC_URL:-https://solana-mainnet.g.alchemy.com/v2/AFjoSzKjqv6Eq53OsF2xe}
+      - WAREHOUSE_TYPE=${WAREHOUSE_TYPE:-bigquery}
+      - BIGQUERY_PROJECT_ID=${BIGQUERY_PROJECT_ID}
+      - BIGQUERY_DATASET_ID=${BIGQUERY_DATASET_ID:-solana_etl}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-/secrets/gcp-credentials.json}
+      - ETL_BATCH_SIZE=${ETL_BATCH_SIZE:-1000}
+      - ETL_CHECKPOINT_INTERVAL=${ETL_CHECKPOINT_INTERVAL:-100}
+      - ETL_INTERVAL_SECONDS=${ETL_INTERVAL_SECONDS:-30}
+      - RUST_LOG=${RUST_LOG:-info}
+    volumes:
+      - ./secrets:/secrets:ro
+      - ./data:/data
+    command: ["solana-etl", "incremental", "--interval", "30"]
+    restart: unless-stopped
+
+  # Optional: Postgres for local testing
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=solana_etl
+      - POSTGRES_USER=solana_etl
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    profiles:
+      - postgres
+
+volumes:
+  postgres_data:
+

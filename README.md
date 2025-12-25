@@ -1,0 +1,78 @@
+# Solana Data ETL Pipeline
+
+Production-grade Solana data pipeline for ingesting Solana on-chain data  into Postgres.
+
+## Quick Start
+
+### 1. Set up Postgres
+
+```bash
+brew install postgresql
+brew services start postgresql
+createdb solana_etl
+```
+
+### 2. Configure Environment
+
+```bash
+export WAREHOUSE_TYPE=postgres
+export WAREHOUSE_CONNECTION="postgresql://localhost/solana_etl"
+```
+
+### 3. Build & Run
+
+```bash
+# Build
+cargo build --release
+
+# Test connection
+cargo run --release -- health
+
+# Backfill historical data
+cargo run --release -- backfill --start-slot 280000000 --end-slot 280001000 --workers 2
+
+# Run incremental loader (real-time)
+cargo run --release -- incremental --interval 30
+```
+
+### 4. View Data
+
+```bash
+# Command line
+psql solana_etl -c "SELECT COUNT(*) FROM fact_transactions;"
+
+# Or use pgAdmin4 to browse visually
+```
+
+## Commands
+
+- `health` - Check RPC and database connectivity
+- `backfill --start-slot X --end-slot Y --workers N` - Backfill historical slots
+- `incremental --interval N` - Run continuous incremental loader (N = seconds between runs)
+
+## Database Schema
+
+See `docs/SCHEMA.md` for complete schema documentation.
+
+Main tables:
+- `fact_transactions` - All transaction events
+- `etl_metadata` - Pipeline state (last processed slot, etc.)
+
+## Docker
+
+```bash
+# Build image
+docker build -t solana-etl .
+
+# Run with docker-compose
+docker-compose up -d
+```
+
+## Configuration
+
+Set via environment variables:
+- `ALCHEMY_RPC_URL` - Your Alchemy RPC endpoint (defaults to hardcoded endpoint)
+- `WAREHOUSE_TYPE` - `postgres` or `bigquery` (default: `postgres`)
+- `WAREHOUSE_CONNECTION` - Postgres connection string
+- `ETL_BATCH_SIZE` - Events per batch insert (default: 1000)
+- `ETL_INTERVAL_SECONDS` - Incremental loader interval (default: 30)

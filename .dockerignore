@@ -1,0 +1,11 @@
+target/
+.git/
+.gitignore
+*.md
+docs/
+sql/
+terraform/
+*.log
+.env
+secrets/
+
