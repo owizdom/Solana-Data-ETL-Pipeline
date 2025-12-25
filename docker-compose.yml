@@ -4,7 +4,7 @@ services:
   solana-etl:
     build: .
     environment:
-      - ALCHEMY_RPC_URL=${ALCHEMY_RPC_URL:-https://solana-mainnet.g.alchemy.com/v2/AFjoSzKjqv6Eq53OsF2xe}
+      - ALCHEMY_RPC_URL=${ALCHEMY_RPC_URL}
       - WAREHOUSE_TYPE=${WAREHOUSE_TYPE:-bigquery}
       - BIGQUERY_PROJECT_ID=${BIGQUERY_PROJECT_ID}
       - BIGQUERY_DATASET_ID=${BIGQUERY_DATASET_ID:-solana_etl}

@@ -37,7 +37,8 @@ impl Default for Config {
     fn default() -> Self {
         Config {
             alchemy: AlchemyConfig {
-                rpc_url: "https://solana-mainnet.g.alchemy.com/v2/AFjoSzKjqv6Eq53OsF2xe".to_string(),
+                rpc_url: env::var("ALCHEMY_RPC_URL")
+                    .unwrap_or_else(|_| "https://solana-mainnet.g.alchemy.com/v2/YOUR_API_KEY".to_string()),
                 max_retries: env::var("ALCHEMY_MAX_RETRIES")
                     .ok()
                     .and_then(|s| s.parse().ok())
